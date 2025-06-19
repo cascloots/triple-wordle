@@ -24,28 +24,38 @@
     </div>
 
     <main>
-        <div class="games-container">
-            <!-- WALLET (6 letters) -->
-            <div class="game-board">
-                <h3>Word 1 (6 letters)</h3>
+        <div class="word-navigation">
+            <button class="nav-arrow nav-left" id="prev-word">‹</button>
+            <div class="word-indicator">
+                <span class="current-word-info">
+                    <span id="current-word-title">Word 1</span>
+                    <span id="current-word-length">(6 letters)</span>
+                </span>
+                <div class="word-dots">
+                    <span class="dot active" data-word="0"></span>
+                    <span class="dot" data-word="1"></span>
+                    <span class="dot" data-word="2"></span>
+                </div>
+            </div>
+            <button class="nav-arrow nav-right" id="next-word">›</button>
+        </div>
+
+        <div class="game-carousel">
+            <div class="game-board active" data-word="wallet" data-index="0">
                 <div class="grid" id="wallet-grid">
                     <!-- 6 rows, 6 columns for WALLET -->
                 </div>
                 <div class="word-status" id="wallet-status">🔍</div>
             </div>
 
-            <!-- SEARCH (6 letters) -->
-            <div class="game-board">
-                <h3>Word 2 (6 letters)</h3>
+            <div class="game-board" data-word="search" data-index="1">
                 <div class="grid" id="search-grid">
                     <!-- 6 rows, 6 columns for SEARCH -->
                 </div>
                 <div class="word-status" id="search-status">🔍</div>
             </div>
 
-            <!-- FOLD (4 letters) -->
-            <div class="game-board">
-                <h3>Word 3 (4 letters)</h3>
+            <div class="game-board" data-word="fold" data-index="2">
                 <div class="grid" id="fold-grid">
                     <!-- 6 rows, 4 columns for FOLD -->
                 </div>
@@ -105,6 +115,7 @@
                 <li>⬜ Gray: Letter not in the word</li>
                 <li>Use the virtual keyboard to type your guess</li>
                 <li>Press ENTER to submit your guess</li>
+                <li>Use arrows (← →) or dots to switch between words</li>
                 <li>You have 6 attempts to guess all three words</li>
                 <li>Each guess applies to all three words simultaneously</li>
             </ul>
