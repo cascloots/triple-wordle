@@ -38,8 +38,16 @@ class TripleWordle {
         
         grids.forEach((gridId, index) => {
             const grid = document.getElementById(gridId);
+            if (!grid) {
+                console.error(`Grid element not found: ${gridId}`);
+                return;
+            }
+            
             const wordKey = wordKeys[index];
             const cols = this.wordLengths[wordKey];
+            
+            // Clear existing content
+            grid.innerHTML = '';
             
             // Create 6 rows for each grid
             for (let row = 0; row < this.maxAttempts; row++) {
@@ -52,6 +60,8 @@ class TripleWordle {
                     grid.appendChild(cell);
                 }
             }
+            
+            console.log(`Initialized ${gridId} with ${grid.children.length} cells`);
         });
     }
     
@@ -342,8 +352,31 @@ class TripleWordle {
 
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new TripleWordle();
+    console.log('DOM Content Loaded - Starting Triple Wordle');
+    try {
+        const game = new TripleWordle();
+        console.log('Triple Wordle initialized successfully');
+        
+        // Make game globally accessible for debugging
+        window.tripleWordle = game;
+    } catch (error) {
+        console.error('Error initializing Triple Wordle:', error);
+    }
 });
+
+// Fallback initialization if DOMContentLoaded already fired
+if (document.readyState === 'loading') {
+    // Document is still loading, wait for DOMContentLoaded
+} else {
+    // Document is already loaded
+    console.log('Document already loaded - Starting Triple Wordle immediately');
+    try {
+        const game = new TripleWordle();
+        window.tripleWordle = game;
+    } catch (error) {
+        console.error('Error in fallback initialization:', error);
+    }
+}
 
 // Add some fun animations and effects
 document.addEventListener('DOMContentLoaded', () => {

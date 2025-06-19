@@ -129,6 +129,9 @@ main {
     gap: 5px;
     margin-bottom: 15px;
     justify-content: center;
+    min-height: 320px; /* Ensure minimum height for 6 rows */
+    position: relative;
+    z-index: 1;
 }
 
 /* Wallet and Search grids (6x6) */
@@ -156,6 +159,9 @@ main {
     color: #374151;
     background: #ffffff;
     transition: all 0.3s ease;
+    min-width: 50px;
+    min-height: 50px;
+    box-sizing: border-box;
 }
 
 .grid-cell.correct {
