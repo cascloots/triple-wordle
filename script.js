@@ -16,6 +16,7 @@ class TripleWordle {
         this.maxAttempts = 6;
         this.solvedWords = new Set();
         this.gameOver = false;
+        this.currentGuess = '';
         
         this.guesses = {
             wallet: [],
@@ -28,6 +29,7 @@ class TripleWordle {
         this.initializeGrids();
         this.bindEvents();
         this.updateDisplay();
+        this.updateGuessDisplay();
     }
     
     initializeGrids() {
@@ -54,24 +56,8 @@ class TripleWordle {
     }
     
     bindEvents() {
-        const guessInput = document.getElementById('guess-input');
-        const submitButton = document.getElementById('submit-guess');
-        const clearButton = document.getElementById('clear-input');
         const playAgainButton = document.getElementById('play-again');
         
-        // Input events
-        guessInput.addEventListener('input', (e) => {
-            e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
-        });
-        
-        guessInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.submitGuess();
-            }
-        });
-        
-        submitButton.addEventListener('click', () => this.submitGuess());
-        clearButton.addEventListener('click', () => this.clearInput());
         playAgainButton.addEventListener('click', () => this.resetGame());
         
         // Virtual keyboard events
@@ -96,22 +82,23 @@ class TripleWordle {
     }
     
     handleKeyPress(key) {
-        const guessInput = document.getElementById('guess-input');
+        if (this.gameOver) return;
         
         if (key === 'ENTER') {
             this.submitGuess();
         } else if (key === 'BACKSPACE') {
-            guessInput.value = guessInput.value.slice(0, -1);
-        } else if (/^[A-Z]$/.test(key) && guessInput.value.length < 6) {
-            guessInput.value += key;
+            this.currentGuess = this.currentGuess.slice(0, -1);
+            this.updateGuessDisplay();
+        } else if (/^[A-Z]$/.test(key) && this.currentGuess.length < 6) {
+            this.currentGuess += key;
+            this.updateGuessDisplay();
         }
     }
     
     submitGuess() {
         if (this.gameOver) return;
         
-        const guessInput = document.getElementById('guess-input');
-        const guess = guessInput.value.trim().toUpperCase();
+        const guess = this.currentGuess.trim().toUpperCase();
         
         if (guess.length === 0) {
             this.showError('Please enter a guess!');
@@ -124,7 +111,7 @@ class TripleWordle {
         }
         
         this.processGuess(guess);
-        this.clearInput();
+        this.clearCurrentGuess();
     }
     
     processGuess(guess) {
@@ -290,27 +277,42 @@ class TripleWordle {
         document.getElementById('game-over-modal').style.display = 'none';
     }
     
+    updateGuessDisplay() {
+        const guessTextElement = document.getElementById('guess-text');
+        guessTextElement.textContent = this.currentGuess;
+    }
+    
     showError(message) {
         // Simple error display - could be enhanced with a toast notification
-        const guessInput = document.getElementById('guess-input');
-        const originalPlaceholder = guessInput.placeholder;
-        guessInput.placeholder = message;
-        guessInput.style.borderColor = '#ef4444';
+        const currentGuessElement = document.getElementById('current-guess');
+        const originalBorderColor = currentGuessElement.style.borderColor;
+        currentGuessElement.style.borderColor = '#ef4444';
+        currentGuessElement.style.boxShadow = '0 5px 15px rgba(239, 68, 68, 0.3)';
+        
+        // Flash the error message briefly
+        const guessTextElement = document.getElementById('guess-text');
+        const originalText = guessTextElement.textContent;
+        guessTextElement.textContent = message.toUpperCase();
+        guessTextElement.style.color = '#ef4444';
         
         setTimeout(() => {
-            guessInput.placeholder = originalPlaceholder;
-            guessInput.style.borderColor = '#d1d5db';
+            currentGuessElement.style.borderColor = '#3b82f6';
+            currentGuessElement.style.boxShadow = '0 5px 15px rgba(59, 130, 246, 0.2)';
+            guessTextElement.textContent = originalText;
+            guessTextElement.style.color = '#374151';
         }, 2000);
     }
     
-    clearInput() {
-        document.getElementById('guess-input').value = '';
+    clearCurrentGuess() {
+        this.currentGuess = '';
+        this.updateGuessDisplay();
     }
     
     resetGame() {
         this.currentAttempt = 0;
         this.solvedWords.clear();
         this.gameOver = false;
+        this.currentGuess = '';
         this.guesses = { wallet: [], search: [], fold: [] };
         this.keyboardState.clear();
         
@@ -334,7 +336,7 @@ class TripleWordle {
         
         this.updateDisplay();
         this.hideModal();
-        this.clearInput();
+        this.clearCurrentGuess();
     }
 }
 
@@ -356,12 +358,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Add click feedback to input
-    document.getElementById('guess-input').addEventListener('focus', (e) => {
+    // Add click feedback to current guess display
+    document.getElementById('current-guess').addEventListener('mouseenter', (e) => {
         e.target.style.transform = 'scale(1.02)';
     });
     
-    document.getElementById('guess-input').addEventListener('blur', (e) => {
+    document.getElementById('current-guess').addEventListener('mouseleave', (e) => {
         e.target.style.transform = 'scale(1)';
     });
 }); 

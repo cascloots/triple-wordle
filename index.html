@@ -46,10 +46,11 @@
             </div>
         </div>
 
-        <div class="input-section">
-            <input type="text" id="guess-input" placeholder="Enter your guess..." maxlength="6" autocomplete="off">
-            <button id="submit-guess">Submit Guess</button>
-            <button id="clear-input">Clear</button>
+        <div class="current-guess-display">
+            <div class="current-guess" id="current-guess">
+                <span class="guess-text" id="guess-text"></span>
+                <span class="cursor">|</span>
+            </div>
         </div>
 
         <div class="keyboard">
@@ -95,6 +96,8 @@
                 <li>🟩 Green: Correct letter in correct position</li>
                 <li>🟨 Yellow: Correct letter in wrong position</li>
                 <li>⬜ Gray: Letter not in the word</li>
+                <li>Use the virtual keyboard to type your guess</li>
+                <li>Press ENTER to submit your guess</li>
                 <li>You have 6 attempts to guess all three words</li>
                 <li>Each guess applies to all three words simultaneously</li>
             </ul>
