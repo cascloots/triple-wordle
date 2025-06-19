@@ -17,13 +17,6 @@ class TripleWordle {
         this.solvedWords = new Set();
         this.gameOver = false;
         this.currentGuess = '';
-        this.currentWordIndex = 0;
-        
-        this.wordInfo = [
-            { key: 'wallet', title: 'Word 1', length: 6 },
-            { key: 'search', title: 'Word 2', length: 6 },
-            { key: 'fold', title: 'Word 3', length: 4 }
-        ];
         
         this.guesses = {
             wallet: [],
@@ -37,7 +30,6 @@ class TripleWordle {
         this.bindEvents();
         this.updateDisplay();
         this.updateGuessDisplay();
-        this.updateWordNavigation();
     }
     
     initializeGrids() {
@@ -65,20 +57,8 @@ class TripleWordle {
     
     bindEvents() {
         const playAgainButton = document.getElementById('play-again');
-        const prevWordButton = document.getElementById('prev-word');
-        const nextWordButton = document.getElementById('next-word');
         
         playAgainButton.addEventListener('click', () => this.resetGame());
-        prevWordButton.addEventListener('click', () => this.previousWord());
-        nextWordButton.addEventListener('click', () => this.nextWord());
-        
-        // Word dots navigation
-        document.querySelectorAll('.dot').forEach(dot => {
-            dot.addEventListener('click', (e) => {
-                const wordIndex = parseInt(e.target.dataset.word);
-                this.switchToWord(wordIndex);
-            });
-        });
         
         // Virtual keyboard events
         document.querySelectorAll('.key').forEach(key => {
@@ -97,10 +77,6 @@ class TripleWordle {
                 this.handleKeyPress('BACKSPACE');
             } else if (/^[A-Z]$/.test(key)) {
                 this.handleKeyPress(key);
-            } else if (key === 'ARROWLEFT') {
-                this.previousWord();
-            } else if (key === 'ARROWRIGHT') {
-                this.nextWord();
             }
         });
     }
@@ -306,52 +282,6 @@ class TripleWordle {
         guessTextElement.textContent = this.currentGuess;
     }
     
-    previousWord() {
-        if (this.currentWordIndex > 0) {
-            this.currentWordIndex--;
-            this.updateWordNavigation();
-        }
-    }
-    
-    nextWord() {
-        if (this.currentWordIndex < 2) {
-            this.currentWordIndex++;
-            this.updateWordNavigation();
-        }
-    }
-    
-    switchToWord(index) {
-        if (index >= 0 && index < 3) {
-            this.currentWordIndex = index;
-            this.updateWordNavigation();
-        }
-    }
-    
-    updateWordNavigation() {
-        const currentWordInfo = this.wordInfo[this.currentWordIndex];
-        
-        // Update word title and length
-        document.getElementById('current-word-title').textContent = currentWordInfo.title;
-        document.getElementById('current-word-length').textContent = `(${currentWordInfo.length} letters)`;
-        
-        // Update navigation arrows
-        const prevButton = document.getElementById('prev-word');
-        const nextButton = document.getElementById('next-word');
-        
-        prevButton.disabled = this.currentWordIndex === 0;
-        nextButton.disabled = this.currentWordIndex === 2;
-        
-        // Update dots
-        document.querySelectorAll('.dot').forEach((dot, index) => {
-            dot.classList.toggle('active', index === this.currentWordIndex);
-        });
-        
-        // Update visible game board
-        document.querySelectorAll('.game-board').forEach((board, index) => {
-            board.classList.toggle('active', index === this.currentWordIndex);
-        });
-    }
-    
     showError(message) {
         // Simple error display - could be enhanced with a toast notification
         const currentGuessElement = document.getElementById('current-guess');
@@ -383,7 +313,6 @@ class TripleWordle {
         this.solvedWords.clear();
         this.gameOver = false;
         this.currentGuess = '';
-        this.currentWordIndex = 0;
         this.guesses = { wallet: [], search: [], fold: [] };
         this.keyboardState.clear();
         
@@ -408,7 +337,6 @@ class TripleWordle {
         this.updateDisplay();
         this.hideModal();
         this.clearCurrentGuess();
-        this.updateWordNavigation();
     }
 }
 
